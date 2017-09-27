@@ -20,7 +20,7 @@
 #ifdef ENABLE_RAMLOG
 #include "log.h"
 #else
-#define LOG
+#define LOG(x, y) 
 #endif
 
 /**********************************************************************
@@ -172,7 +172,7 @@ int Urtp::codeUnicam(const uint32_t *rawAudio, char *dest)
     int usedBits;
     int shiftValue32Bit;
     int shiftValueCoded = 0;
-    bool isEvenBlock;
+    bool isEvenBlock = false;
 #if UNICAM_CODED_SAMPLE_SIZE_BITS != 8
     int compressedSampleBitShift = 0;
     int compressedSample;
@@ -637,7 +637,7 @@ bool Urtp::init(void *datagramStorage)
 {
     bool success = false;
     int x = 0;
-    Container *tmp;
+    Container *tmp = NULL;
 
 #ifdef DISABLE_UNICAM
     {
