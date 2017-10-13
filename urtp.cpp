@@ -88,11 +88,11 @@ int Urtp::processAudio(int monoSample)
 
     //LOG(EVENT_MONO_SAMPLE_UNUSED_BITS, unusedBits);
 
-#ifndef FIXED_GAIN_LEFT_SHIFT
-    monoSample <<= _audioShift;
-#else
-    monoSample <<= FIXED_GAIN_LEFT_SHIFT;
-#endif
+    if (_audioShiftFixed >= 0) {
+        monoSample <<= _audioShiftFixed;
+    } else {
+        monoSample <<= _audioShift;
+    }
 
     // Add the new unused bits count to the buffer and
     // update the minimum
@@ -621,6 +621,7 @@ Urtp::Urtp(Callback<void(const char *)> datagramReadyCb,
     _audioShiftSampleCount = 0;
     _audioUnusedBitsMin = 0x7FFFFFFF;
     _audioShift = 0;
+    _audioShiftFixed = -1;
     _sequenceNumber = 0;
     _numDatagramOverflows = 0;
     _numDatagramsFree = 0;
@@ -633,11 +634,13 @@ Urtp::~Urtp()
 }
 
 // Initialise ourselves.
-bool Urtp::init(void *datagramStorage)
+bool Urtp::init(void *datagramStorage, int audioShiftFixed)
 {
     bool success = false;
     int x = 0;
     Container *tmp = NULL;
+
+    _audioShiftFixed = audioShiftFixed;
 
 #ifdef DISABLE_UNICAM
     {
