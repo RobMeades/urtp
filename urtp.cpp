@@ -18,7 +18,7 @@
 #include "urtp.h"
 
 #ifdef ENABLE_RAMLOG
-#include "ioc_log.h"
+#include "log.h"
 #else
 #define LOG(x, y) 
 #endif
